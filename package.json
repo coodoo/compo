@@ -1,0 +1,35 @@
+{
+  "name": "Sample",
+  "version": "1.0.0",
+  "description": "Sample application for meetup",
+  "main": "js/app.js",
+  "dependencies": {
+    "babel-core": "^4.7.12",
+    "babel-loader": "^4.1.0",
+    "jquery": "^2.1.3",
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-notify": "^2.2.0",
+    "del": "^1.1.1",
+    "file-loader": "^0.8.1",
+    "flux": "^2.0.1",
+    "page": "^1.6.1",
+    "react": "^0.13",
+    "react-hot-loader": "^1.2.3",
+    "run-sequence": "^1.0.2",
+    "shortid": "^2.1.3",
+    "suitcss-preprocessor": "^0.4.0",
+    "webpack": "^1.7.3",
+    "webpack-dev-server": "^1.7.0"
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "dev": "gulp dev",
+    "build": "gulp build",
+    "build-dev": "webpack -d",
+    "test": "jest"
+  },
+  "author": "Jeremy Lu",
+  "license": "MIT"
+}

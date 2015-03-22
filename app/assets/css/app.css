@@ -1,0 +1,96 @@
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+    font-size: 14px;
+    font-family: sans-serif;
+
+}
+
+/* root elem in index.html*/
+#container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+
+.display {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 0;
+    bottom: 0;
+
+    padding: 10px;
+    width: 400px;
+    height: 80px;
+    outline: 1px solid red;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    /*align-items: stretch;*/
+}
+
+.display-top {
+	display: flex;
+	flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.display-bottom {
+
+}
+
+
+.repeat-btn{
+	width: 32px;
+	height: 32px;
+}
+
+.positionBar {
+	position: relative;
+	height: 20px;
+	border: 1px solid black;
+	margin-top: 6px;
+}
+
+.positionBar-now {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 20px;
+	background-color: rgba(0, 122, 0, 0.5);
+}
+
+/* util
+ -------------------------------------------------- */
+
+.imageRadius{
+    border: 1px solid transparent;
+    border-radius: 3px;
+}
+
+.rightGap {
+    margin-right: 8px;
+}
+
+.visible {
+    opacity: 1;
+}
+
+.invisible {
+    opacity: 0;
+}
