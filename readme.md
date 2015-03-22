@@ -151,8 +151,17 @@ React container pattern POC
 	- 播放進度列可點選
 
 
+# 閱讀重點
+	- 程式進入點在 boot.js
+	- 觀察 DisplayContainer 取得資料，並轉手配發資料給子元件的流程
+	- 觀察 Dipslay 元件，此為一個母元件(compound component)
+	- 觀察 RepeatButton 元件，此為一個子元件(base component)
+
 						
 # 思考
+	
+	- 此架構設計是否真能實現高度可用性？
+	
 	- 真的需要重用元件嗎？
 		- 或許複製後直接改內容最快？
 
