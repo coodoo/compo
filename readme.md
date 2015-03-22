@@ -2,6 +2,8 @@
 React container pattern POC
 ===========================
 
+![](https://raw.githubusercontent.com/coodoo/compo/master/mock.png)
+
 # Goal
 	
 	- 增加元件易用性
