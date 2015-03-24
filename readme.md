@@ -2,195 +2,160 @@
 React container pattern POC
 ===========================
 
-![](https://raw.githubusercontent.com/coodoo/compo/master/mock.png)
-
-# Goal
+# 程式說明
 	
-	- 增加元件易用性
+	![](https://raw.githubusercontent.com/coodoo/compo/master/mock.png)
 
-	- 讓元件與 business logic 完全分離成為 passive part
+	- 籍由模擬一個音樂播放器的顯示面板來驗証 container pattern 如何確保元件的 re-usability
 
-	- 避免子元件直接操作 action 以免緊密產生相依性
-
-	- 避免需由上往下層層傳遞 callback 的手續
-
-	- 未來能與 Relay 配合，並優化 write 流程以確保元件可重用性
-
-
-# 總結
-
-	# 大原則
-		
-		- 所有元件都在 propTypes{} 內列出自已需要的 prop 與其 type
-		
-		- 從 reuse 的角度來說，就是不可改寫元件內容，只能透過 prop/callback 傳入資料來操作它
-
-		- 如要改寫，只能透過 extends 的方式來覆寫
-
-	# Container
-
-		- 資料來源
-			- 一律內部直接從 store 取得
-			- 目地是縮限每次 re-render 時影響的層級與元件數量
-
-		- 重要特徵是提供 actionMap	
-			- 透過 actions 屬性傳給直屬元件，通常也就是母元件
-
-		- 無法 reuse
-			- 因為它緊密相依外部 actionCreator 
-			- 也因為無法 reuse，因此可隨時複製後改寫以適應不同需求
-
-		- container 內可再包 container
-			- sub-container 同樣是內部直接從 store 取資料
-			- 不開放 prop 供外界傳入參數
-
-	# 母元件
-
-		- 特色是透過 actions 屬性拿到一包 actionMap (即 callback)
-			- 以方便分派給下屬子元件
-
-		- 又稱為 compound component，因為它還包了多個子元件
-
-		- 主要功能是操作下屬子元件，傳入 prop 與 callback
-
-		- 可 reuse
-			- 但要記得一起帶相依的子元件走
-
-		- 母元件可以被包入其它元件而成為子元件嗎？	
-			← 只要能傳入符合該元件 interface 的資料就可以
-
-	# 子元件
-		
-		- 子元件只有 prop, callback 兩種屬性
-
-		- 又稱為 base component，因為它已是最小單位，裏面不會再包其它子元件
-
-		- 可 reuse
-
-		- 子元件可以變成母元件嗎？
-			← 從不可改寫的角度來說，原本子元件沒處理 actions props 的話，自然就無法成為母元件
-			← 因為 container 會透過 actions prop 傳入 callback
-
-
-
-# 實作細節
-
-	# 讓母/子元件與 biz logic 完全分離，成為 passive part (被動元件)
-		
-		- biz logic 是指任何 write 操作，例如發動 actions 來進入 data flow
-		
-		- 元件只需顯示資料，被動接收用戶操作後，將狀況向外反應即可
-			- 至於外界會如何處理此互動行為，不關它的事
-		
-		- 最終是由最外層的 container 元件負責操作 action 
-
-	# 母/子元件一律只讀不寫(透過 prop 傳入資料)
-	
-		- 母/子元件一律透過 prop 收入資料
-			- prop 可以只有一個 user={userVO}
-			- 或按不同 domain 分多個 user={userVO} song={songVO} playlist={listVO}
-	
-	# write 工作交由最外層 container 元件負責
-
-	# 所有元件都只對直屬第一層元件負責(傳入 prop & callback)
-	
-		- 母元件負責操作下屬的子元件
-			- 也就是負責傳 props 與 callback 進入子元件
-			- 子元件則只單純的調用 callback, 例如：this.props.onClick(p1, p2)	
-
-		- container 也只負責直屬第一層元件(傳入 prop, callback, actions 至母元件)
-		
-			- 如此設計必然的結果，是 conatiner 要傳一大包 actionMap 給下層，統包所有可能操作
-			- 這是合理的做法，也是唯一能讓母/子元件都能 reuse 的方式
-
-			- container 元件是更外層的 pure data layer
-				- 它負責從 store.getAll() 取回所有 domain 資料
-				- 再負責將相關 domain 資料餵給 母元件
-				- 它也有 render()，但只放一個母元件，將大包資料傳入即可
-					- 配發資料至各子元件是 母元件 的事
-
-	# 為何要獨立出 DisplayContainer 而非直接整合在 Display 元件內
-		
-		- 因為希望 Display 元件日後也能獨立使用，例如被包在其它更大的元件內
-		- 因此希望讓它角色單純，本質上跟一個子元件其實語法完全一樣(也就是身上沒有 actionMap)
-
-	# 元件內部的 prop 與 callback 透過契約來明確表列
-		- https://facebook.github.io/react/docs/reusable-components.html
-
-		- 例子
-			propTypes: {
-
-				actions: React.PropTypes.object,
-
-				// 這是比較嚴謹的合約，將來讓元件用戶更清楚該傳哪些參數進來
-				song: React.PropTypes.shape({
-			      artist: React.PropTypes.string,
-			      name: React.PropTypes.string,
-			      duration: React.PropTypes.number
-			    }),
-
-				status: React.PropTypes.shape({
-			      repeat: React.PropTypes.boolean,
-			      position: React.PropTypes.number
-			    }),
-			},
-
-	# 子元件調用 action callback 時為何要傳出資料？
-		- 例如子元件內是個下拉選單，用戶選了新資料，此時一定要靠子元件將最新選的值傳出來
-		- 又例如 progress bar，用戶調整了新進度，也要靠子元件傳出最新的值
-
-
-# 程式架構
-
-	- 模擬一個音樂播放器的顯示面板
-
-	- Display 元件為顯示面板主體
-		- 內有 artist, song name, duration 等資訊
-		- 也有 repeat button 可切換歌曲 loop 狀態
-		- 也有 PositionBar 顯示歌曲播放進度，並可點選快轉
-	
-	- repeat 鈕可點選
-
-	- 播放進度列可點選
-
-
-# 閱讀重點
 	- 程式進入點在 boot.js
-	- 觀察 DisplayContainer 取得資料，並轉手配發資料給子元件的流程
-	- 觀察 Dipslay 元件，此為一個母元件(compound component)
-	- 觀察 RepeatButton 元件，此為一個子元件(base component)
-
-						
-# 思考
+		- 觀察 DisplayContainer 取得資料，並轉手配發資料給子元件的流程
+		- 觀察 Dipslay 元件，此為一個 compound component (因為它下面還包了其它元件)
+		- 觀察 RepeatButton 元件，此為一個 base component (因為它下面沒包其它元件)
 	
-	- 此架構設計是否真能實現高度可用性？
-	
-	- 真的需要重用元件嗎？
-		- 或許複製後直接改內容最快？
+	- UI 各部件說明
+		- DisplayContainer 為 container，負責從 store 取得資料與建立 actionMap
+		- Display 為顯示面板主體元件
+			- 內有 artist, song name, duration 等資訊
+			- 也有 RepeatButton 可切換歌曲 loop 狀態
+			- 也有 PositionBar 顯示歌曲播放進度，並可點選快轉
 
-	- 重用的範圍僅限於單一專案內較實際？
-		- 也就是不肖想寫出可多個專案共用的萬能元件
+# 如何執行
 
-
-How to use
-==========
-
-# 第一件事
-	
 	- 安裝相依套件
 
 		$ npm install
 
-# 執行程式
-	
-	- 啟動 local web server 
+	- 執行程式
+		
+		$ gulp dev
+
 	- 訪問 http://localhost:8080
 
-	$ gulp dev
-
-# build 程式
-
-	- 處理所有 js 與 css 並編譯為一份檔案
+# 如何 build
 
 	$ gulp build
+
+
+# 實驗重點
+	
+	- container 如何增加元件重用性(re-usability)
+
+	- 讓元件與 business logic 完全分離，進而成為 passive part
+
+	- 避免子元件內部直接操作 action 以免對外界產生緊密相依性(decoupling)
+
+	- 未來能與 Relay 之 container 結合，並優化 write 流程以確保元件可重用性
+
+
+# conatiner 角色說明
+	
+	- 一律內部從 store 取得資料後存入 this.state 
+		- 不透過 props 接收外部資料
+	
+	- 建立 actionMap{} 傳給下屬元件操作，例如 this.onClick callback
+
+	- container 負責資料的 I/O
+		- 對內提供 store 資料給子元件
+		- 對外介接 actionCreator 之各種操作
+
+	- container 下可有 nested container
+		- nested container 一樣是內部從 store 取資料
+
+	- container 為最小邏輯單位，其下只應包含最緊密需求的子元件
+		- 因為每次 store change 事件後會觸發下屬所有元件都重繪
+		- 因此要盡量減少跟著 re-render 的元件數量
+		- 簡單說：setState() 後影響到的子元件越少越好
+
+	- container 無法 reuse
+		- 因為它緊密相依外部 actionCreator 與 store 
+		- 但可複製後改寫以適應不同專案需求	
+
+# component 角色說明
+
+	- 元件下可有多層次 nested component
+	
+	- 元件接收的 props 有三種類型: data, callback, actions
+
+	- 所有元件都在 propTypes{} 內列出自已需要的 prop 與其 type，這就是一份契約
+		- https://facebook.github.io/react/docs/reusable-components.html
+	
+	- 從 reuse 的角度來說，將來重用時不可改寫元件內容，只能透過 props 傳入資料來操作它
+
+	- 如要改寫元件功能，只能透過 extends 的方式來覆寫
+
+	- 元件可 reuse，但要記得帶走相依的下屬元件
+		- 例如 Display 相依 RepeatButton 與 PositionBar 兩元件
+
+	- 元件可任意被包入其它元件而成為 nested component，只要確保有傳入該元件所需 props 即可
+
+	- 元件只對直屬第一層元件負責(傳入 props)
+
+	- 元件調用 callback 時為何要傳出資料？
+		- 例如元件內是個下拉選單，用戶選了新資料，此時一定要靠元件將最新選取的值傳出來
+		- 又例如 progress bar，用戶調整了新進度，也要靠元件傳出最新的值
+
+# 提升元件效能的技巧
+
+	- 例子
+		<Chrome>
+		  <MainApp>  
+		    <FlexLayout>
+		      <ScrollArea>
+		        <SongDisplayContainer />
+		      </ScrollArea>
+		    </FlexLayout>
+		    </Chrome>
+		  </MainApp>
+		<Chrome>	
+
+	- Chrome, MainApp, FlexLayout, ScrollArea 這四層稱為 structural or interactive component
+	- 這四者永遠不需重繪
+	- 只有最下層的 SongDisplayContainer 因為跟 store 直接關聯因此會觸發 re-render
+	- 這樣的架構可減少每次 re-render 時受波及的元件數量，因而提升效能
+
+# propTypes 語法參考
+
+	propTypes: {
+
+		actions: React.PropTypes.object,
+
+		// 這是比較嚴謹的合約，將來讓元件用戶更清楚該傳哪些參數進來
+		song: React.PropTypes.shape({
+	      artist: React.PropTypes.string,
+	      name: React.PropTypes.string,
+	      duration: React.PropTypes.number
+	    }),
+
+		status: React.PropTypes.shape({
+	      repeat: React.PropTypes.boolean,
+	      position: React.PropTypes.number
+	    }),
+	},
+
+# 進階思考 ("devil's advocate")
+	
+	- 或許 css 就很好用？
+		- 與其做 <MyButton /> 元件
+		- 不如做 <div classname="myButton" /> 樣式控制更快？
+		- 除非這個元件內部要封裝複雜的行為，例如像 select2 或 datagrid 這種元件就有封裝價值
+
+	- 真的需要重用元件嗎？
+		- 或許複製後直接改內容最快？
+		- 因為 web 的世界就是由一堆 <div> 元素組成，為了重用而去封裝元件花的成本如何 justify?
+
+	- 重用的代價是什麼？
+		- 根據以往 flex 的經驗，一個可高度重用的元件，開發時間往往極長
+		- 因為要考量各種可能 use case 而提供不同的 props 接口與 internal logics
+		- 最慘的是永遠無法滿足各種不同需求，因此最後還是要 extends or monkey patch
+
+	- 重用的範圍僅限於單一專案內較實際？
+		- 也就是不肖想寫出可多個專案共用的萬能元件
+
+# 感謝
+
+特別感謝 Hedger Wang 與 Bill Fisher 幫忙 code review 並提供改善建議。
+
+	
+						
 
