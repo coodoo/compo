@@ -2,9 +2,9 @@
 React container pattern POC
 ===========================
 
+![](https://raw.githubusercontent.com/coodoo/compo/master/mock.png)
+
 # 程式說明
-	
-	![](https://raw.githubusercontent.com/coodoo/compo/master/mock.png)
 
 	- 籍由模擬一個音樂播放器的顯示面板來驗証 container pattern 如何確保元件的 re-usability
 
