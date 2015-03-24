@@ -48,7 +48,7 @@ React container pattern POC
 	- 未來能與 Relay 之 container 結合，並優化 write 流程以確保元件可重用性
 
 
-# conatiner 角色說明
+# container 角色說明
 	
 	- 一律內部從 store 取得資料後存入 this.state 
 		- 不透過 props 接收外部資料
@@ -154,7 +154,7 @@ React container pattern POC
 
 # 感謝
 
-特別感謝 Hedger Wang 與 Bill Fisher 幫忙 code review 並提供改善建議。
+特別感謝 [Hedger Wang](https://github.com/hedgerwang) 與 [Bill Fisher](https://twitter.com/fisherwebdev) 幫忙 code review 並提供改善建議。
 
 	
 						
