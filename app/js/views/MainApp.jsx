@@ -1,20 +1,12 @@
 
 var DisplayContainer = require('./DisplayContainer.jsx');
 
-var SongStore = require('../stores/SongStore');
-var AppConstants = require('../constants/AppConstants');
-var actions = require('../actions/AppActionCreator');
-
-
+//
 var MainApp = React.createClass({
 
-    getInitialState: function() {
-        var o = this.getTruth();
-        return o;
-    },
 
     componentWillMount: function() {
-        SongStore.addListener( AppConstants.CHANGE_EVENT, this._onChange );
+
     },
 
 
@@ -58,21 +50,10 @@ var MainApp = React.createClass({
     render: function() {
 
         return (
-        	<DisplayContainer song={this.state.currentSong} status={this.state.playStatus} />
+        	<DisplayContainer />
         )
 
-    },
-
-    //
-    _onChange: function(){
-        this.setState( this.getTruth() );
-    },
-
-    //
-    getTruth: function() {
-        return SongStore.getAll();
     }
-
 
 });
 

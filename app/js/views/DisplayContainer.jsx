@@ -1,6 +1,8 @@
+
 var actions = require('../actions/AppActionCreator');
 var util = require('../utils/util');
-
+var SongStore = require('../stores/SongStore');
+var AppConstants = require('../constants/AppConstants');
 var Display = require('./Display.jsx');
 
 // container 的資料來源有兩條路
@@ -20,11 +22,19 @@ var Comp = React.createClass({
 		onProgressChange: actions.updateSongProgess
 	},
 
+	getInitialState: function() {
+	    return this.getTruth();
+	},
+
+	componentWillMount: function() {
+			SongStore.addListener( AppConstants.CHANGE_EVENT, this._onChange );
+	},
+
 	//
   render: function() {
 
-  	var song = this.props.song;
-  	var status = this.props.status;
+  	var song = this.state.currentSong;
+  	var status = this.state.playStatus;
 
     return (
     	<Display actions={this.actionMap}
@@ -32,6 +42,16 @@ var Comp = React.createClass({
     					 status={status} />
     );
 
+  },
+
+  //
+  _onChange: function(){
+      this.setState( this.getTruth() );
+  },
+
+  //
+  getTruth: function() {
+      return SongStore.getAll();
   },
 
   //

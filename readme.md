@@ -14,7 +14,7 @@ React container pattern POC
 
 	- 避免需由上往下層層傳遞 callback 的手續
 
-	- 未來能與 Relay 配合，並幫忙優化 write 流程以確保元件可重用性
+	- 未來能與 Relay 配合，並優化 write 流程以確保元件可重用性
 
 
 # 總結
@@ -30,8 +30,8 @@ React container pattern POC
 	# Container
 
 		- 資料來源
-			- 可由外部透過 props 傳入
-			- 也可內部直接從 store 取得
+			- 一律內部直接從 store 取得
+			- 目地是縮限每次 re-render 時影響的層級與元件數量
 
 		- 重要特徵是提供 actionMap	
 			- 透過 actions 屬性傳給直屬元件，通常也就是母元件
@@ -41,11 +41,12 @@ React container pattern POC
 			- 也因為無法 reuse，因此可隨時複製後改寫以適應不同需求
 
 		- container 內可再包 container
-			- 並可由 upper container 透過 props 傳資料給 lower container
+			- sub-container 同樣是內部直接從 store 取資料
+			- 不開放 prop 供外界傳入參數
 
 	# 母元件
 
-		- 特色是透過 actions 屬性拿到一包 callback
+		- 特色是透過 actions 屬性拿到一包 actionMap (即 callback)
 			- 以方便分派給下屬子元件
 
 		- 又稱為 compound component，因為它還包了多個子元件
@@ -56,7 +57,7 @@ React container pattern POC
 			- 但要記得一起帶相依的子元件走
 
 		- 母元件可以被包入其它元件而成為子元件嗎？	
-			← 只要能傳入符合該元件 interface 的資料，應該是可以
+			← 只要能傳入符合該元件 interface 的資料就可以
 
 	# 子元件
 		
