@@ -32,7 +32,6 @@ var Comp = React.createClass({
   //
   render: function() {
 
-    var actions = this.props.actions;
     var song = this.props.song;
     var status = this.props.status;
 
