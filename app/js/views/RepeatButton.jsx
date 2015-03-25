@@ -3,7 +3,8 @@
 var Comp = React.createClass({
 
 	propTypes: {
-		repeat: React.PropTypes.bool
+		repeat: React.PropTypes.bool,
+		onClick: React.PropTypes.func
 	},
 
 
@@ -29,13 +30,6 @@ var Comp = React.createClass({
     }
 
     return elem;
-  },
-
-  /**
-   *
-   */
-  handleMouseOver: function(evt){
-      this.$btnClose.removeClass('visible invisible ').addClass('visible');
   },
 
   //

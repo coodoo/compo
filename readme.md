@@ -53,7 +53,7 @@ React container pattern POC
 	- 一律內部從 store 取得資料後存入 this.state 
 		- 不透過 props 接收外部資料
 	
-	- 建立 actionMap{} 傳給下屬元件操作，例如 this.onClick callback
+	- 透過 props 將 callback 傳入下屬元件
 
 	- container 負責資料的 I/O
 		- 對內提供 store 資料給子元件
@@ -75,7 +75,7 @@ React container pattern POC
 
 	- 元件下可有多層次 nested component
 	
-	- 元件接收的 props 有三種類型: data, callback, actions
+	- 元件接收的 props 有兩種類型: data, callback
 
 	- 所有元件都在 propTypes{} 內列出自已需要的 prop 與其 type，這就是一份契約
 		- https://facebook.github.io/react/docs/reusable-components.html
@@ -86,6 +86,7 @@ React container pattern POC
 
 	- 元件可 reuse，但要記得帶走相依的下屬元件
 		- 例如 Display 相依 RepeatButton 與 PositionBar 兩元件
+		- 建議可建 Display/ folder 來放置相關實體檔案
 
 	- 元件可任意被包入其它元件而成為 nested component，只要確保有傳入該元件所需 props 即可
 

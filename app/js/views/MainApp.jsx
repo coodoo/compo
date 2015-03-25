@@ -1,3 +1,5 @@
+// MainApp is a plain structural component
+// which shall never be re-rendered for that it only holds other components but no data
 
 var DisplayContainer = require('./DisplayContainer.jsx');
 

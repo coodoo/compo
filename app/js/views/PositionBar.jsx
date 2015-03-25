@@ -3,7 +3,8 @@ var Comp = React.createClass({
 
 	propTypes: {
 		duration: React.PropTypes.number,
-		position: React.PropTypes.number
+		position: React.PropTypes.number,
+		onChange: React.PropTypes.func
 	},
 
   // todo
