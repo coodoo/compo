@@ -11,7 +11,10 @@ var Comp = React.createClass({
 	// component interface
 	propTypes: {
 
-		actions: React.PropTypes.object,
+		actions: React.PropTypes.shape({
+      onRepeatClick: React.PropTypes.func,
+      onProgressChange: React.PropTypes.func,
+    }),
 
 		song: React.PropTypes.shape({
       artist: React.PropTypes.string,
