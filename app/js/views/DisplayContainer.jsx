@@ -28,6 +28,10 @@ var Comp = React.createClass({
 			SongStore.addListener( AppConstants.CHANGE_EVENT, this._onChange );
 	},
 
+	componentWillUnmount: function() {
+			SongStore.removeListener( AppConstants.CHANGE_EVENT, this._onChange );
+	},
+
 	//
   render: function() {
 
