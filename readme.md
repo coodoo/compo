@@ -14,7 +14,7 @@ React container pattern POC
 		- 觀察 RepeatButton 元件，此為一個 base component (因為它下面沒包其它元件)
 	
 	- UI 各部件說明
-		- DisplayContainer 為 container，負責從 store 取得資料與建立 actionMap
+		- DisplayContainer 為 container，負責從 store 取得資料
 		- Display 為顯示面板主體元件
 			- 內有 artist, song name, duration 等資訊
 			- 也有 RepeatButton 可切換歌曲 loop 狀態
@@ -41,7 +41,7 @@ React container pattern POC
 	
 	- container 如何增加元件重用性(re-usability)
 
-	- 讓元件與 business logic 完全分離，進而成為 passive part
+	- 讓子元件與 business logic 完全分離，進而成為 passive part
 
 	- 避免子元件內部直接操作 action 以免對外界產生緊密相依性(decoupling)
 
@@ -53,23 +53,25 @@ React container pattern POC
 	- 一律內部從 store 取得資料後存入 this.state 
 		- 不透過 props 接收外部資料
 	
-	- 透過 props 將 callback 傳入下屬元件
+	- 透過 props 將 callback 傳入子元件
+
+	- 子元件只有 props 不需 state
 
 	- container 負責資料的 I/O
 		- 對內提供 store 資料給子元件
 		- 對外介接 actionCreator 之各種操作
 
 	- container 下可有 nested container
-		- nested container 一樣是內部從 store 取資料
+		- nested container 一樣是內部從 store 取資料自成另個生態系
 
 	- container 為最小邏輯單位，其下只應包含最緊密需求的子元件
 		- 因為每次 store change 事件後會觸發下屬所有元件都重繪
-		- 因此要盡量減少跟著 re-render 的元件數量
-		- 簡單說：setState() 後影響到的子元件越少越好
+		- 因此要盡量減少每次 change 後隨之 render 的元件數量
+		- 簡單說：setState() 後影響到的子元件越少越好，因此 container 內包的子元件越少越好
 
 	- container 無法 reuse
-		- 因為它緊密相依外部 actionCreator 與 store 
-		- 但可複製後改寫以適應不同專案需求	
+		- 因為它緊密相依外部 actionCreator 與 store
+		- 這代表幾乎個專案都得改寫它，因此重用性不高
 
 # component 角色說明
 
@@ -111,9 +113,11 @@ React container pattern POC
 		<Chrome>	
 
 	- Chrome, MainApp, FlexLayout, ScrollArea 這四層稱為 structural or interactive component
-	- 這四者永遠不需重繪
+	- 這四層永遠不需重繪
 	- 只有最下層的 SongDisplayContainer 因為跟 store 直接關聯因此會觸發 re-render
 	- 這樣的架構可減少每次 re-render 時受波及的元件數量，因而提升效能
+	- 以此例來看，只有 SongDisplayContainer 下屬的子元件會需重繪
+	- _感謝 Hedger 提供此範例與解釋_
 
 # propTypes 語法參考
 
