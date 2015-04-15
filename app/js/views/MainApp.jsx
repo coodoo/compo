@@ -20,7 +20,6 @@ var MainApp = React.createClass({
     // unmount
 
     componentWillUnmount: function() {
-        SongStore.removeChangeListener( this._onChange );
     },
 
     componentDidUnmount: function() {
